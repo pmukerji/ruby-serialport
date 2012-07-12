@@ -157,7 +157,14 @@ VALUE sp_create_impl(class, _port)
 
    params.c_oflag = 0;
    params.c_lflag = 0;
-   params.c_iflag &= (IXON | IXOFF | IXANY);
+   
+   // Default config is stripping 0x13 input bytes on Linux. Need to investigate further, 
+   // but this new config works for now.
+   // See also: https://bugs.archlinux.org/task/25851
+   //params.c_iflag &= (IXON | IXOFF | IXANY);
+   config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |INLCR | PARMRK | INPCK | ISTRIP | IXON);
+   
+   
    params.c_cflag |= CLOCAL | CREAD;
    params.c_cflag &= ~HUPCL;
 
